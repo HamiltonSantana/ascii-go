@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"image"
-	"image/jpeg"
+	"image/png"
 	"os"
+
 )
 
 //Define the intensity of the character base on grayscale (these is a rough aproximation of
@@ -31,7 +32,13 @@ func colorASCII(r uint32, g uint32, b uint32, a uint32) string {
     grayPoint := ( 0.2126 * float64(cr) + 0.7152 * float64(cg) + 0.0722 * float64(cb))
 
     //divede the number to 10 to fit the range of grayscale (char intensity)
-    indx := int(grayPoint/10)
+
+    var indx int
+    if int(grayPoint/10) < 0 {
+        indx =  25
+    } else {
+        indx = int(grayPoint/10)
+    }
 
     //print out the colored character and background to the relate intensity char
     return fmt.Sprintf("\033[48;2;%d;%d;%dm%s\033[30m",cr, cg, cb,string(grayscale[indx]))
@@ -39,19 +46,21 @@ func colorASCII(r uint32, g uint32, b uint32, a uint32) string {
 
 //process to render the image
 func renderImg(img image.Image) {
-    for i := img.Bounds().Min.Y;  i < img.Bounds().Max.Y; i++ {
-        for j := img.Bounds().Min.X;  j < img.Bounds().Max.X; j++ {
-            r,g,b,a := img.At(j,i).RGBA()
+    var i, j int
+    for j = 0;  j < img.Bounds().Dy(); j++ {
+        for i := 0;  i < img.Bounds().Dx(); i++ {
+            r,g,b,a := img.At(int(i),j).RGBA()
             fmt.Print(colorASCII(r,g,b,a))
         }
         //correct the trailing color from the last 'print'
         fmt.Println("\033[0m")
     }
+    fmt.Println(i," ", j)
 }
 
 func main() {
-    file, err := os.Open("img.jpg")
-    img, err1 := jpeg.Decode(file)
+    file, err := os.Open("car.png")
+    img, err1 := png.Decode(file)
     defer file.Close()
     if err != nil {
         fmt.Print(err.Error())
