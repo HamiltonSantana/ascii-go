@@ -3,15 +3,19 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/gif"
+	"image/jpeg"
 	"image/png"
 	"os"
-
 )
 
 //Define the intensity of the character base on grayscale (these is a rough aproximation of
 // the real deal
 const grayscale = "@#09867543&2%$1|!;:.=-*^' "
 
+var _ png.UnsupportedError
+var _ jpeg.UnsupportedError
+var _ gif.GIF
 //convert the point (r, g or b) to the scale of 0 to 255
 // the decimal part are truncate
 func convertPoint(p uint32, op uint32) int {
@@ -59,18 +63,23 @@ func renderImg(img image.Image) {
 }
 
 func main() {
-    file, err := os.Open("car.png")
-    img, err1 := png.Decode(file)
+    pathImg := os.Args[1]
+
+    file, err := os.Open(pathImg)
+    
     defer file.Close()
     if err != nil {
         fmt.Print(err.Error())
         return
     }
-    if err1 != nil {
-        fmt.Print(err1.Error())
+
+    foo, _, bar := image.Decode(file)
+
+    if bar != nil {
+        fmt.Println(bar)
     }
 
-    renderImg(img)
+    renderImg(foo)
 
     fmt.Println()
 }
