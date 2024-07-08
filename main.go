@@ -45,7 +45,8 @@ func colorASCII(r uint32, g uint32, b uint32, a uint32) string {
     }
 
     //print out the colored character and background to the relate intensity char
-    return fmt.Sprintf("\033[48;2;%d;%d;%dm%s\033[30m",cr, cg, cb,string(grayscale[indx]))
+    charact := string(grayscale[indx])
+    return fmt.Sprintf("\033[48;2;%d;%d;%dm%s%s\033[30m",cr, cg, cb, charact, charact)
 }
 
 //process to render the image
