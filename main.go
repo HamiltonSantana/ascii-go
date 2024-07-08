@@ -11,7 +11,7 @@ import (
 
 //Define the intensity of the character base on grayscale (these is a rough aproximation of
 // the real deal
-const grayscale = "@#09867543&2%$1|!;:.=-*^' "
+const grayscale = " .'^-+=:;!|1$2&34567890%@#"
 
 var _ png.UnsupportedError
 var _ jpeg.UnsupportedError
@@ -46,7 +46,7 @@ func colorASCII(r uint32, g uint32, b uint32, a uint32) string {
 
     //print out the colored character and background to the relate intensity char
     charact := string(grayscale[indx])
-    return fmt.Sprintf("\033[48;2;%d;%d;%dm%s%s\033[30m",cr, cg, cb, charact, charact)
+        return fmt.Sprintf("\033[38;2;%d;%d;%dm%s%s\033[30m",cr, cg, cb, charact, charact)
 }
 
 //process to render the image
